@@ -10,25 +10,31 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'Administrator',
-            'email' => 'admin@hotel.com',
-            'password' => Hash::make('password'),
-        ]);
-        $admin->assignRole('Super Admin');
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@hotel.com'],
+            [
+                'name' => 'Administrator',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $admin->syncRoles('Super Admin');
 
-        $fnb = User::create([
-            'name' => 'Staf F&B',
-            'email' => 'fnb@hotel.com',
-            'password' => Hash::make('password'),
-        ]);
-        $fnb->assignRole('FnB');
+        $fnb = User::firstOrCreate(
+            ['email' => 'fnb@hotel.com'],
+            [
+                'name' => 'Staf F&B',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $fnb->syncRoles('FnB');
 
-        $hk = User::create([
-            'name' => 'Staf Housekeeping',
-            'email' => 'housekeeping@hotel.com',
-            'password' => Hash::make('password'),
-        ]);
-        $hk->assignRole('Housekeeping');
+        $hk = User::firstOrCreate(
+            ['email' => 'housekeeping@hotel.com'],
+            [
+                'name' => 'Staf Housekeeping',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $hk->syncRoles('Housekeeping');
     }
 }

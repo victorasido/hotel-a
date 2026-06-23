@@ -6,14 +6,12 @@
     <title>Login — Grand Nusantara Hotel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+    @vite(['resources/css/app.css'])
 </head>
 <body>
 <div class="login-page">
     <div class="login-bg-pattern"></div>
 
-    {{-- LEFT PANEL --}}
     <div class="login-left">
         <div class="login-brand">
             <div class="login-brand-icon">🏨</div>
@@ -31,14 +29,14 @@
         </p>
     </div>
 
-    {{-- RIGHT PANEL --}}
     <div class="login-right">
         <div class="login-card animate-slide-up">
             <div class="login-card-title">Selamat Datang 👋</div>
             <div class="login-card-sub">Silakan masuk untuk melanjutkan</div>
 
-            <form method="POST" action="/login-post">
+            <form method="POST" action="{{ route('login.post') }}">
                 @csrf
+
                 <div class="form-group">
                     <label class="form-label" for="email">Email<span class="required">*</span></label>
                     <input
@@ -88,7 +86,5 @@
         </div>
     </div>
 </div>
-
-@livewireScripts
 </body>
 </html>
