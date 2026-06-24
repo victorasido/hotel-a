@@ -135,7 +135,7 @@ class ReservationForm extends Component
         }
     }
 
-    public function save(): mixed
+    public function save()
     {
         $this->validate([
             'guest_id' => 'required|exists:guests,id',

@@ -15,7 +15,7 @@ class Login extends Component
     public string $password = '';
     public bool $remember = false;
 
-    public function login(): mixed
+    public function login()
     {
         $this->validate([
             'email' => 'required|email',

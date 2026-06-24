@@ -1,79 +1,130 @@
 <div class="animate-fade-in">
     {{-- Page Header --}}
-    <div class="page-header">
+    <div class="page-header" style="margin-bottom: 16px;">
         <h1>Dashboard</h1>
         <p>Selamat datang kembali, <strong>{{ auth()->user()->name }}</strong>! Berikut ringkasan operasional hari ini.</p>
     </div>
 
-    {{-- Stat Cards Row 1 --}}
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+    {{-- Tab Navigation — Room Status hanya untuk Admin & Front Office --}}
+    <div class="page-tabs">
+        <button wire:click="setTab('summary')" class="page-tab {{ $activeTab === 'summary' ? 'active' : '' }}" id="tab-btn-summary">
+            📊 Ringkasan
+        </button>
+        @hasanyrole('Super Admin|Front Office')
+        <button wire:click="setTab('room-status')" class="page-tab {{ $activeTab === 'room-status' ? 'active' : '' }}" id="tab-btn-room-status">
+            🏠 Status Kamar
+        </button>
+        @endhasanyrole
+    </div>
+
+    {{-- Tab: Room Status --}}
+    @if($activeTab === 'room-status')
+    <div class="tab-content" wire:key="dashboard-tab-room-status">
+        <livewire:room-status-board key="dashboard-room-status-board" />
+    </div>
+    @endif
+
+    {{-- Tab: Summary --}}
+    @if($activeTab === 'summary')
+    <div class="tab-content" wire:key="dashboard-tab-summary">
+
+    {{-- Role: Super Admin & Front Office (Rooms Stats) --}}
+    @hasanyrole('Super Admin|Front Office')
+    <h3 style="margin-bottom: 12px; font-size: 16px; color: var(--navy-800);">Status Kamar & Reservasi</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
         <div class="stat-card navy">
             <div class="stat-icon navy">🏠</div>
             <div class="stat-info">
-                <div class="stat-value">{{ $stats['vc'] }}</div>
+                <div class="stat-value">{{ $stats['vc'] ?? 0 }}</div>
                 <div class="stat-label">Kamar Tersedia (VC)</div>
             </div>
         </div>
         <div class="stat-card success">
             <div class="stat-icon success">🛏️</div>
             <div class="stat-info">
-                <div class="stat-value">{{ $stats['oc'] }}</div>
+                <div class="stat-value">{{ $stats['oc'] ?? 0 }}</div>
                 <div class="stat-label">Kamar Terisi (OC)</div>
             </div>
         </div>
         <div class="stat-card warning">
             <div class="stat-icon warning">📅</div>
             <div class="stat-info">
-                <div class="stat-value">{{ $stats['check_in_today'] }}</div>
+                <div class="stat-value">{{ $stats['check_in_today'] ?? 0 }}</div>
                 <div class="stat-label">Check-in Hari Ini</div>
+            </div>
+        </div>
+        <div class="stat-card navy">
+            <div class="stat-icon navy">🚪</div>
+            <div class="stat-info">
+                <div class="stat-value">{{ $stats['check_out_today'] ?? 0 }}</div>
+                <div class="stat-label">Check-out Hari Ini</div>
+            </div>
+        </div>
+    </div>
+    @endhasanyrole
+
+    {{-- Role: Super Admin (Revenue) --}}
+    @role('Super Admin')
+    <h3 style="margin-bottom: 12px; font-size: 16px; color: var(--navy-800);">Keuangan</h3>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:28px;">
+        <div class="stat-card gold">
+            <div class="stat-icon gold">💵</div>
+            <div class="stat-info">
+                <div class="stat-value" style="font-size:18px;">Rp {{ number_format($stats['revenue_today'] ?? 0, 0, ',', '.') }}</div>
+                <div class="stat-label">Revenue Hari Ini</div>
             </div>
         </div>
         <div class="stat-card gold">
             <div class="stat-icon gold">💰</div>
             <div class="stat-info">
-                <div class="stat-value" style="font-size:18px;">Rp {{ number_format($stats['revenue_month'], 0, ',', '.') }}</div>
+                <div class="stat-value" style="font-size:18px;">Rp {{ number_format($stats['revenue_month'] ?? 0, 0, ',', '.') }}</div>
                 <div class="stat-label">Revenue Bulan Ini</div>
             </div>
         </div>
     </div>
+    @endrole
 
-    {{-- Stat Cards Row 2 --}}
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
-        <div class="stat-card navy">
-            <div class="stat-icon navy">🚪</div>
-            <div class="stat-info">
-                <div class="stat-value">{{ $stats['check_out_today'] }}</div>
-                <div class="stat-label">Check-out Hari Ini</div>
-            </div>
-        </div>
+    {{-- Role: Super Admin, FnB, Housekeeping --}}
+    @if(auth()->user()->hasAnyRole(['Super Admin', 'FnB', 'Housekeeping']))
+    <h3 style="margin-bottom: 12px; font-size: 16px; color: var(--navy-800);">Operasional Lainnya</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+        
+        @hasanyrole('Super Admin|Housekeeping')
         <div class="stat-card warning">
             <div class="stat-icon warning">🧹</div>
             <div class="stat-info">
-                <div class="stat-value">{{ $stats['vd'] }}</div>
+                <div class="stat-value">{{ $stats['vd'] ?? 0 }}</div>
                 <div class="stat-label">Kamar Kotor (VD)</div>
             </div>
         </div>
+        <div class="stat-card danger">
+            <div class="stat-icon danger" style="color:var(--danger-600);background:var(--danger-50);">🚨</div>
+            <div class="stat-info">
+                <div class="stat-value">{{ $stats['hk_pending'] ?? 0 }}</div>
+                <div class="stat-label">Task HK Pending</div>
+            </div>
+        </div>
+        @endhasanyrole
+
+        @hasanyrole('Super Admin|FnB')
         <div class="stat-card success">
             <div class="stat-icon success">🍽️</div>
             <div class="stat-info">
-                <div class="stat-value">{{ $stats['open_fnb_orders'] }}</div>
+                <div class="stat-value">{{ $stats['open_fnb_orders'] ?? 0 }}</div>
                 <div class="stat-label">Order F&B Aktif</div>
             </div>
         </div>
-        <div class="stat-card gold">
-            <div class="stat-icon gold">💵</div>
-            <div class="stat-info">
-                <div class="stat-value" style="font-size:18px;">Rp {{ number_format($stats['revenue_today'], 0, ',', '.') }}</div>
-                <div class="stat-label">Revenue Hari Ini</div>
-            </div>
-        </div>
+        @endhasanyrole
+
     </div>
+    @endif
 
     {{-- Bottom Grid --}}
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px;">
 
+        @hasanyrole('Super Admin|Front Office')
         {{-- Recent Reservations --}}
-        <div class="card">
+        <div class="card" style="grid-column: span 2;">
             <div class="card-header">
                 <span class="card-title">📅 Reservasi Terbaru</span>
                 <a href="{{ route('reservations.index') }}" class="btn btn-outline btn-sm">Lihat Semua</a>
@@ -110,34 +161,28 @@
                 @endif
             </div>
         </div>
+        @endhasanyrole
 
-        {{-- Quick Actions + Alerts --}}
-        <div style="display:flex;flex-direction:column;gap:16px;">
-
-            {{-- Quick Actions --}}
+        <div style="display:flex;flex-direction:column;gap:20px;">
+            @hasanyrole('Super Admin|Front Office')
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">⚡ Aksi Cepat</span>
                 </div>
                 <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-                    <a href="{{ route('reservations.create') }}" class="btn btn-primary w-full" id="btn-new-reservation">
-                        📅 Reservasi Baru
-                    </a>
-                    <a href="{{ route('fnb.orders.create') }}" class="btn btn-gold w-full" id="btn-new-order">
-                        🍽️ Order F&B Baru
-                    </a>
-                    <a href="{{ route('room-status') }}" class="btn btn-outline w-full" id="btn-room-board">
-                        🏠 Room Status Board
-                    </a>
+                    <a href="{{ route('reservations.create') }}" class="btn btn-primary w-full">📅 Reservasi Baru</a>
+                    <a href="{{ route('fnb.portal') }}" class="btn btn-gold w-full">🍽️ Order F&B Baru</a>
+                    <a href="{{ route('dashboard') }}" wire:click="setTab('room-status')" class="btn btn-outline w-full">🏠 Room Status Board</a>
                 </div>
             </div>
+            @endhasanyrole
 
-            {{-- Pending HK Tasks --}}
+            @hasanyrole('Super Admin|Housekeeping')
             @if($pendingHkTasks->isNotEmpty())
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">🧹 HK Urgent</span>
-                    <a href="{{ route('housekeeping.tasks') }}" class="btn btn-outline btn-sm">Lihat</a>
+                    <a href="{{ route('housekeeping.tasks') }}" class="btn btn-outline btn-sm">Task Board</a>
                 </div>
                 <div class="card-body" style="padding:12px;">
                     @foreach($pendingHkTasks as $task)
@@ -152,13 +197,14 @@
                 </div>
             </div>
             @endif
+            @endhasanyrole
 
-            {{-- Pending F&B --}}
+            @hasanyrole('Super Admin|FnB')
             @if($pendingFnbOrders->isNotEmpty())
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">🍽️ F&B Pending</span>
-                    <a href="{{ route('fnb.kitchen') }}" class="btn btn-outline btn-sm">KDS</a>
+                    <a href="{{ route('fnb.portal') }}" class="btn btn-outline btn-sm">KDS</a>
                 </div>
                 <div class="card-body" style="padding:12px;">
                     @foreach($pendingFnbOrders as $order)
@@ -172,7 +218,11 @@
                 </div>
             </div>
             @endif
-
+            @endhasanyrole
         </div>
+        
     </div>
+    </div> {{-- /tab-content summary --}}
+    @endif
+
 </div>

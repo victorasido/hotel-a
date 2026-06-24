@@ -15,7 +15,11 @@ return new class extends Migration
             $table->foreignId('room_id')->constrained()->onDelete('restrict');
             $table->date('check_in_date');
             $table->date('check_out_date');
-            $table->integer('nights')->storedAs('DATEDIFF(check_out_date, check_in_date)');
+            if (\Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite') {
+                $table->integer('nights')->storedAs('cast(julianday(check_out_date) - julianday(check_in_date) as integer)');
+            } else {
+                $table->integer('nights')->storedAs('DATEDIFF(check_out_date, check_in_date)');
+            }
             $table->integer('pax')->default(1);
             $table->enum('status', ['pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled', 'no_show'])->default('confirmed');
             $table->enum('source', ['walk_in', 'phone', 'online', 'travel_agent', 'other'])->default('walk_in');

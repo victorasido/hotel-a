@@ -18,7 +18,13 @@
     // Update clock every second
     setInterval(() => {
         const el = document.getElementById('kds-clock');
-        if (el) el.textContent = new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        if (el) {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            el.textContent = `${h}:${m}:${s}`;
+        }
     }, 1000);
 </script>
 </body>

@@ -22,7 +22,7 @@ class CheckOut extends Component
         $this->checkIn = $checkIn->load(['reservation.room.roomType', 'guest', 'folio.items']);
     }
 
-    public function processCheckOut(): mixed
+    public function processCheckOut()
     {
         $checkIn = $this->checkIn;
         $folio = $checkIn->folio;

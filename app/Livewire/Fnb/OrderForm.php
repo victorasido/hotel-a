@@ -53,7 +53,7 @@ class OrderForm extends Component
         return collect($this->cartItems)->sum(fn($i) => $i['qty'] * $i['price']);
     }
 
-    public function submitOrder(): mixed
+    public function submitOrder()
     {
         $this->validate([
             'cartItems' => 'required|array|min:1',

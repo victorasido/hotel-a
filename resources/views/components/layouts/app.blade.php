@@ -22,74 +22,61 @@
         </div>
 
         <nav class="sidebar-nav">
+            {{-- ─── UTAMA (Semua Role) ─────────────────── --}}
             <div class="nav-section-label">Utama</div>
 
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}"
+               class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+               id="nav-dashboard">
                 <span class="nav-icon">📊</span>
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('room-status') }}" class="nav-item {{ request()->routeIs('room-status') ? 'active' : '' }}">
-                <span class="nav-icon">🏠</span>
-                <span>Room Status</span>
-            </a>
-
+            {{-- ─── OPERASIONAL (Front Office & Admin) ──── --}}
+            @hasanyrole('Super Admin|Front Office')
             <div class="nav-section-label">Operasional</div>
 
-            <a href="{{ route('guests') }}" class="nav-item {{ request()->routeIs('guests*') ? 'active' : '' }}">
-                <span class="nav-icon">👥</span>
-                <span>Data Tamu</span>
-            </a>
-
-            <a href="{{ route('reservations.index') }}" class="nav-item {{ request()->routeIs('reservations*') ? 'active' : '' }}">
+            <a href="{{ route('reservations.portal') }}"
+               class="nav-item {{ request()->routeIs('reservations*', 'guests*') ? 'active' : '' }}"
+               id="nav-reservations">
                 <span class="nav-icon">📅</span>
-                <span>Reservasi</span>
+                <span>Reservasi & Tamu</span>
             </a>
+            @endhasanyrole
 
+            {{-- ─── F&B (FnB, Front Office, Admin) ──────── --}}
+            @hasanyrole('Super Admin|FnB|Front Office')
             <div class="nav-section-label">F&amp;B</div>
 
-            <a href="{{ route('fnb.orders') }}" class="nav-item {{ request()->routeIs('fnb.orders*') ? 'active' : '' }}">
+            <a href="{{ route('fnb.portal') }}"
+               class="nav-item {{ request()->routeIs('fnb*') ? 'active' : '' }}"
+               id="nav-fnb">
                 <span class="nav-icon">🍽️</span>
-                <span>Order F&amp;B</span>
+                <span>Layanan F&amp;B</span>
             </a>
+            @endhasanyrole
 
-            @role('FnB|Super Admin')
-            <a href="{{ route('fnb.kitchen') }}" class="nav-item {{ request()->routeIs('fnb.kitchen') ? 'active' : '' }}">
-                <span class="nav-icon">👨‍🍳</span>
-                <span>Kitchen Display</span>
-            </a>
-            @endrole
-
-            @role('Super Admin|FnB')
-            <a href="{{ route('fnb.menu') }}" class="nav-item {{ request()->routeIs('fnb.menu') ? 'active' : '' }}">
-                <span class="nav-icon">📋</span>
-                <span>Menu F&amp;B</span>
-            </a>
-            @endrole
-
+            {{-- ─── HOUSEKEEPING ──────────────────────────── --}}
+            @hasanyrole('Super Admin|Housekeeping')
             <div class="nav-section-label">Housekeeping</div>
 
-            <a href="{{ route('housekeeping.tasks') }}" class="nav-item {{ request()->routeIs('housekeeping*') ? 'active' : '' }}">
+            <a href="{{ route('housekeeping.tasks') }}"
+               class="nav-item {{ request()->routeIs('housekeeping*') ? 'active' : '' }}"
+               id="nav-housekeeping">
                 <span class="nav-icon">🧹</span>
                 <span>Task Board</span>
             </a>
+            @endhasanyrole
 
+            {{-- ─── PENGATURAN (Super Admin only) ────────── --}}
             @role('Super Admin')
-            <div class="nav-section-label">Master Data</div>
+            <div class="nav-section-label">Pengaturan</div>
 
-            <a href="{{ route('master.room-types') }}" class="nav-item {{ request()->routeIs('master.room-types') ? 'active' : '' }}">
-                <span class="nav-icon">🏷️</span>
-                <span>Tipe Kamar</span>
-            </a>
-
-            <a href="{{ route('master.rooms') }}" class="nav-item {{ request()->routeIs('master.rooms') ? 'active' : '' }}">
-                <span class="nav-icon">🔑</span>
-                <span>Kamar</span>
-            </a>
-
-            <a href="{{ route('master.users') }}" class="nav-item {{ request()->routeIs('master.users') ? 'active' : '' }}">
-                <span class="nav-icon">👤</span>
-                <span>Pengguna</span>
+            <a href="{{ route('settings.portal') }}"
+               class="nav-item {{ request()->routeIs('settings*', 'master*') ? 'active' : '' }}"
+               id="nav-settings">
+                <span class="nav-icon">⚙️</span>
+                <span>Pengaturan Hotel</span>
             </a>
             @endrole
         </nav>

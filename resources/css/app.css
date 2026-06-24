@@ -107,6 +107,73 @@ button { cursor: pointer; font-family: inherit; }
 input, select, textarea { font-family: inherit; }
 
 /* =============================================
+   PAGE TAB NAVIGATION
+   ============================================= */
+.page-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 2px solid var(--gray-200);
+    margin-bottom: 28px;
+    padding-bottom: 0;
+}
+
+.page-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-500);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.page-tab:hover {
+    color: var(--navy-700);
+    background: var(--gray-50);
+}
+
+.page-tab.active {
+    color: var(--navy-900);
+    border-bottom-color: var(--gold-500);
+    background: transparent;
+    font-weight: 700;
+}
+
+.page-tab .tab-badge {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--gray-200);
+    color: var(--gray-600);
+    line-height: 1.4;
+}
+
+.page-tab.active .tab-badge {
+    background: var(--navy-800);
+    color: var(--white);
+}
+
+.tab-content {
+    animation: tab-fade-in 0.2s ease;
+}
+
+@keyframes tab-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================
    APP LAYOUT
    ============================================= */
 .app-wrapper {
@@ -1024,76 +1091,172 @@ tbody td {
    KITCHEN DISPLAY
    ============================================= */
 .kitchen-display {
-    background: var(--navy-950);
+    background: #f4f6fa;
     min-height: 100vh;
-    padding: 24px;
+    padding: 32px 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.kds-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .kds-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid rgba(15, 32, 64, 0.1);
+    padding-bottom: 20px;
 }
 
 .kds-title {
-    font-family: var(--font-display);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--gold-300);
+    font-family: var(--font-body);
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--navy-900);
 }
 
 .kds-time {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--white);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--navy-800);
     font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
 }
 
-.kds-grid {
+.kds-columns-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+.kds-column-card {
+    background: var(--white);
+    border: 1px solid rgba(15, 32, 64, 0.08);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    min-height: 65vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+}
+
+.kds-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(15, 32, 64, 0.05);
+}
+
+.kds-column-title {
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kds-column-badge {
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.kds-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .kds-order-card {
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.12);
+    background: #f8fafc;
+    border: 1px solid rgba(15, 32, 64, 0.06);
     border-radius: var(--radius-lg);
-    padding: 18px;
+    padding: 20px;
     transition: all var(--transition-base);
 }
 
-.kds-order-card.urgent {
-    border-color: var(--gold-500);
-    animation: glow-pulse 2s infinite;
+.kds-order-card:hover {
+    transform: translateY(-2px);
+    background: var(--white);
+    border-color: rgba(15, 32, 64, 0.15);
+    box-shadow: var(--shadow-md);
 }
 
-@keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(212,160,23,.3); }
-    50% { box-shadow: 0 0 0 8px rgba(212,160,23,0); }
+.kds-order-card.urgent {
+    border-color: var(--warning);
+    background: var(--warning-light);
+    animation: glow-pulse-light 2s infinite;
+}
+
+@keyframes glow-pulse-light {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
 }
 
 .kds-order-number {
     font-size: 20px;
     font-weight: 800;
-    color: var(--white);
+    color: var(--navy-900);
 }
 
 .kds-order-room {
     font-size: 14px;
-    color: var(--gold-300);
-    margin-bottom: 12px;
+    color: var(--gold-700);
+    margin-bottom: 14px;
 }
 
-.kds-item-list { list-style: none; margin-bottom: 14px; }
+.kds-item-list {
+    list-style: none;
+    margin-bottom: 16px;
+    padding: 0;
+}
+
 .kds-item {
     display: flex;
     justify-content: space-between;
-    color: rgba(255,255,255,.8);
-    font-size: 13px;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255,255,255,.06);
+    align-items: center;
+    color: var(--gray-800);
+    font-size: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(15, 32, 64, 0.06);
+}
+
+.kds-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    padding: 60px 20px;
+    color: var(--gray-400);
+    text-align: center;
+}
+
+.kds-empty-icon {
+    font-size: 44px;
+    margin-bottom: 12px;
+    opacity: 0.7;
+}
+
+.kds-empty-text {
+    font-size: 14px;
+    color: var(--gray-500);
 }
 
 /* =============================================

@@ -19,6 +19,15 @@ class AdminUserSeeder extends Seeder
         );
         $admin->syncRoles('Super Admin');
 
+        $fo = User::firstOrCreate(
+            ['email' => 'fo@hotel.com'],
+            [
+                'name' => 'Resepsionis',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $fo->syncRoles('Front Office');
+
         $fnb = User::firstOrCreate(
             ['email' => 'fnb@hotel.com'],
             [

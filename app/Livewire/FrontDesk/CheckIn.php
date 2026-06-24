@@ -29,7 +29,7 @@ class CheckIn extends Component
         }
     }
 
-    public function processCheckIn(): mixed
+    public function processCheckIn()
     {
         $reservation = $this->reservation;
 
